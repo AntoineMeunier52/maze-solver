@@ -1,13 +1,11 @@
 from window import Window
 from window_utils import Line, Point, Cell
+from maze import Maze
 
 def main():
     win = Window(800, 600)
-    cell = Cell(win)
-    cell.draw(20, 20, 40, 40)
-    cell2 = Cell(win)
-    cell2.draw(40, 40, 60, 60)
-    cell.draw_move(cell2)
+    maze = Maze(100, 100, 200, 200, 5, 5, win)
+    maze._create_cells()
     win.wait_for_close()
 
 if __name__ == "__main__":
