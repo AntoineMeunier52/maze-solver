@@ -15,6 +15,6 @@ It automatically generates a random maze and then solves it using a pathfinding 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/maze-solver.git
+   git clone https://github.com/AntoineMeunier52/maze-solver
    cd maze-solver
    ```
