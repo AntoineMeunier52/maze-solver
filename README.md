@@ -3,6 +3,8 @@
 This project is a **maze generator and solver** built with **Python** and **Tkinter** for real-time visualization.
 It automatically generates a random maze and then solves it using a pathfinding algorithm, all visualized step-by-step in a graphical window.
 
+![Demo](maze-solver.gif)
+
 ## 🎮 Features
 
 - ✅ Random maze generation
