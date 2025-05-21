@@ -14,7 +14,7 @@ class Line():
         )
 
 class Cell():
-    def __init__(self, window = None):
+    def __init__(self, draw_line):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True 
@@ -23,7 +23,7 @@ class Cell():
         self._x2 = None 
         self._y1 = None 
         self._y2 = None
-        self._win = window
+        self.draw_line = draw_line
         self.visited = False
 
     def draw(self, x1, y1, x2, y2):
@@ -33,30 +33,30 @@ class Cell():
         self._y2 = y2
         if self.has_left_wall:
             line = Line(Point(x1, y1), Point(x1, y2))
-            self._win.draw_line(line, "black")
+            self.draw_line(line, "black")
         if self.has_right_wall:
             line = Line(Point(x2, y1), Point(x2, y2))
-            self._win.draw_line(line, "black")
+            self.draw_line(line, "black")
         if self.has_top_wall:
             line = Line(Point(x1, y1), Point(x2, y1))
-            self._win.draw_line(line, "black")
+            self.draw_line(line, "black")
         if self.has_bottom_wall:
             line = Line(Point(x1, y2), Point(x2, y2))
-            self._win.draw_line(line, "black")
+            self.draw_line(line, "black")
 
     def draw_breaking_wall(self):
         if not self.has_left_wall:
             line = Line(Point(self._x1, self._y1), Point(self._x1, self._y2))
-            self._win.draw_line(line, "white")
+            self.draw_line(line, "white")
         if not self.has_right_wall:
             line = Line(Point(self._x2, self._y1), Point(self._x2, self._y2))
-            self._win.draw_line(line, "white")
+            self.draw_line(line, "white")
         if not self.has_top_wall:
             line = Line(Point(self._x1, self._y1), Point(self._x2, self._y1))
-            self._win.draw_line(line, "white")
+            self.draw_line(line, "white")
         if not self.has_bottom_wall:
             line = Line(Point(self._x1, self._y2), Point(self._x2, self._y2))
-            self._win.draw_line(line, "white")
+            self.draw_line(line, "white")
 
     def draw_move(self, to_cell, undo=False):
         curr_half = abs(self._x2 - self._x1) // 2
@@ -73,6 +73,6 @@ class Cell():
         if undo:
             color = "gray"
 
-        self._win.draw_line(line, color)
+        self.draw_line(line, color)
 
 
