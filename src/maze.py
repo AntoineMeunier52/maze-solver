@@ -1,7 +1,6 @@
-from window_utils import Point, Line, Cell
+from window_utils import Cell
 import time
 import random
-
 
 class Maze():
     def __init__(
