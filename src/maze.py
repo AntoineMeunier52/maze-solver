@@ -34,6 +34,7 @@ class Maze():
 	def destroy(self):
 		self.is_visible = False
 		self._frame.pack_forget()
+
 class Maze_solver():
     def __init__(
             self,
