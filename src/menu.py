@@ -55,7 +55,7 @@ class Menu:
 		if self._is_valid_size:
 			self._is_valid_size = True
 			self._size_error.grid_forget()
-			self._start_callback(self.maze_x.get(), self.maze_y.get())
+			self._start_callback(self.maze_x.get(), self.maze_y.get(), self.algo.get())
 			return
 		self._size_error.grid(row=5)
 

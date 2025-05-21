@@ -2,38 +2,36 @@ from tkinter import *
 import time
 import random
 
-from window_utils import Cell
+from window_utils import Cell, Line
 
 class Maze():
-	def __init__(self, root, callback):
-		self._frame = Frame(root, bg="white", height=100, width=200)
-		self._start_callback = callback
-		self.is_visible = False
-		#self.maze_size_x = IntVar(10)
-		#self.maze_size_y = IntVar(10)
-		#self.algo = StringVar("DFS")
+    def __init__(self, root, callback, redraw, width, height):
+        self._frame = Frame(root, bg="white", height=100, width=200)
+        self._start_callback = callback
+        self.is_visible = False
+        self.redraw = redraw
+        self.width = width
+        self.height = height
+        self._canvas = None
 
-		self.build_menu()
+    def show(self, x, y, algo):
+        print("into mazzzzzze")
+        self.is_visible = True
+        cell_size_x = (self.width - 2 * 50) / x
+        cell_size_y = (self.height - 2 * 50) / y
+        self._canvas = Canvas(self._frame, bg="white", width=self.width, height=self.height)
+        self._frame.pack(expand=YES)
+        self._canvas.pack(fill=BOTH, expand=1)
+        maze = Maze_solver(50, 50, x, y, cell_size_x, cell_size_y, self.redraw, self.draw_line)
+        maze.solve()
 
-	def build_menu(self):
-		Label(self._frame, text="Maze Maze", font=("roboto", 40), bg="white", fg="black").pack()
-		Label(self._frame, text="Enter the size of the maze", font=("roboto", 16), bg="white", fg="black").pack()
-		Label(self._frame, text="X and Y must be between 10 and 40.", font=("courrier", 10), bg="white", fg="black").pack()
-		Button(self._frame, text="change view", command=self._start_maze).pack()
 
-	def _start_maze(self):
-		self._start_callback()
+    def destroy(self):
+        self.is_visible = False
+        self._frame.pack_forget()
 
-	def _start_maze(self):
-		self._start_callback()
-
-	def show(self):
-		self.is_visible = True
-		self._frame.pack(expand=YES)
-
-	def destroy(self):
-		self.is_visible = False
-		self._frame.pack_forget()
+    def draw_line(self, line, color):
+        line.draw(self._canvas, color)
 
 class Maze_solver():
     def __init__(
@@ -44,7 +42,8 @@ class Maze_solver():
             num_cols,
             cell_size_x,
             cell_size_y,
-            win = None,
+            redraw,
+            draw_line
     ):
         self._x1 = x1
         self._y1 = y1
@@ -52,8 +51,9 @@ class Maze_solver():
         self._cols = num_cols
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
-        self._win = win
-        self._cells = [[Cell(win) for j in range(num_cols)] for i in range(num_rows)]
+        self._redraw = redraw
+        self._draw_line = draw_line
+        self._cells = [[Cell(draw_line) for j in range(num_cols)] for i in range(num_rows)]
         self._curr_x = x1
         self._curr_y = y1
 
@@ -70,27 +70,23 @@ class Maze_solver():
 
 
     def _draw_cell(self, i, j):
-        if self._win == None:
-            return
         x1 = self._x1 + (self._cell_size_x * j)
         y1 = self._y1 + (self._cell_size_y * i)
         x2 = x1 + self._cell_size_x
         y2 = y1 + self._cell_size_y
         self._cells[i][j].draw(x1, y1, x2, y2)
-        self._animate()
+        self._animate(0.0)
 
-    def _animate(self):
-        if self._win == None:
-            return
-        self._win.redraw()
-        time.sleep(0.0333)
+    def _animate(self, timing):
+        self._redraw()
+        time.sleep(timing)
 
     def _break_entrance_and_exit(self):
         self._cells[0][0].has_top_wall = False
         self._cells[0][0].draw_breaking_wall()
         self._cells[self._rows - 1][self._cols - 1].has_bottom_wall = False
         self._cells[self._rows - 1][self._cols - 1].draw_breaking_wall()
-        self._animate()
+        self._animate(0.0)
 
     def _break_walls_r(self, i, j):
         self._cells[i][j].visited = True
@@ -113,7 +109,7 @@ class Maze_solver():
             #if there no more cells to visit just draw and return
             if not to_visit:
                 self._cells[i][j].draw_breaking_wall()
-                self._animate()
+                self._animate(0.01)
                 return
 
             #get a random direction
@@ -148,7 +144,7 @@ class Maze_solver():
         return self._solve_r(0, 0)
 
     def _solve_r(self, i, j):
-        self._animate()
+        self._animate(0.02)
         self._cells[i][j].visited = True
         if i == self._rows - 1 and j == self._cols - 1:
             return True

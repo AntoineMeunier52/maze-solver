@@ -12,7 +12,7 @@ class Window():
         self._root.protocol("WM_DELETE_WINDOW", self.close)
 
         self._menu = Menu(self._root, self._switch_view)
-        self._maze = Maze(self._root, self._switch_view)
+        self._maze = Maze(self._root, self._switch_view, self.redraw, width, height)
 
         self._canvas = None
         self._frame = None 
@@ -25,13 +25,17 @@ class Window():
 
         self._menu.show()
 
-    def _switch_view(self):
+    def _switch_view(self, maze_x=None, maze_y=None, algo=None):
+        if (maze_x and maze_y and algo):
+            self.maze_x = maze_x
+            self.maze_y = maze_y
+            self.algo = algo
         self._can_change_view=True
 
-    def _change_view(self):
+    def _change_view(self, ):
         if self._menu.is_visible:
             self._menu.destroy()
-            self._maze.show()
+            self._maze.show(self.maze_x, self.maze_y, self.algo)
         elif self._maze.is_visible:
             self._maze.destroy()
             self._menu.show()
@@ -47,6 +51,7 @@ class Window():
             if self._can_change_view:
                 self._change_view()
                 self._can_change_view = False
+            print("loop")
             self.redraw()
         print("The window is now close")
         return
