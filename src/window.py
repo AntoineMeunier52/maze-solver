@@ -1,55 +1,60 @@
 from tkinter import Tk, BOTH, Canvas, Button, Entry, Label, Frame
 from menu import Menu
+from maze import Maze
+
 class Window():
     def __init__(self, width, height):
-        self.__root = Tk()
-        self.__root.geometry(f"{width}x{height}")
-        self.__root.title = "Maze solver"
-        self.__root.protocol("WM_DELETE_WINDOW", self.close)
+        self._root = Tk()
+        self._root.geometry(f"{width}x{height}")
+        self._root.minsize(width, height)
+        self._root.title("Maze Solver")
+        self._root.config(background="white")
+        self._root.protocol("WM_DELETE_WINDOW", self.close)
 
-        self.__canvas = None
-        self.__frame = None 
-        self.__is_running = False
+        self._menu = Menu(self._root, self._switch_view)
+        self._maze = Maze(self._root, self._switch_view)
 
-    def drawMenu(self):
-       print("draw menu")
-       menu = Menu(self.__root)
-       menu.draw()
-       print("out of menu")
-       return
+        self._canvas = None
+        self._frame = None 
+        self._is_running = False
+        self._can_change_view = False
         
-    def drawMaze(self):
-        print("draw maze")
-        self.clear_view()
-        self.__canvas = Canvas(self.__root, bg="white", width=width, height=height)
-        self.__canvas.pack(fill=BOTH, expand=1)
-        return
+        self.maze_x = 14
+        self.maze_y = 16
+        self.algo = "DFS"
 
-    def clear_view(self):
-        #clear the root window before show maze or menu
-        if self.__frame:
-            self.__frame.destroy()
-            self.__frame = None
-        if self.__canvas:
-            self.__canvas.destroy()
-            self.__canvas = None
+        self._menu.show()
+
+    def _switch_view(self):
+        self._can_change_view=True
+
+    def _change_view(self):
+        if self._menu.is_visible:
+            self._menu.destroy()
+            self._maze.show()
+        elif self._maze.is_visible:
+            self._maze.destroy()
+            self._menu.show()
 
     def redraw(self):
-        self.__root.update_idletasks()
-        self.__root.update()
+        self._root.update_idletasks()
+        self._root.update()
 
     def wait_for_close(self):
-        self.__is_running = True
+        self._is_running = True
         #don't close the windown directly
-        while self.__is_running:
+        while self._is_running:
+            if self._can_change_view:
+                self._change_view()
+                self._can_change_view = False
             self.redraw()
         print("The window is now close")
         return
 
     def close(self):
-        self.__is_running = False
+        self._is_running = False
         print("Closing the window")
         return
 
     def draw_line(self, line, color):
-        line.draw(self.__canvas, color)
+        line.draw(self._canvas, color)

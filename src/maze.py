@@ -1,8 +1,40 @@
-from window_utils import Cell
+from tkinter import *
 import time
 import random
 
+from window_utils import Cell
+
 class Maze():
+	def __init__(self, root, callback):
+		self._frame = Frame(root, bg="white", height=100, width=200)
+		self._start_callback = callback
+		self.is_visible = False
+		#self.maze_size_x = IntVar(10)
+		#self.maze_size_y = IntVar(10)
+		#self.algo = StringVar("DFS")
+
+		self.build_menu()
+
+	def build_menu(self):
+		Label(self._frame, text="Maze Maze", font=("roboto", 40), bg="white", fg="black").pack()
+		Label(self._frame, text="Enter the size of the maze", font=("roboto", 16), bg="white", fg="black").pack()
+		Label(self._frame, text="X and Y must be between 10 and 40.", font=("courrier", 10), bg="white", fg="black").pack()
+		Button(self._frame, text="change view", command=self._start_maze).pack()
+
+	def _start_maze(self):
+		self._start_callback()
+
+	def _start_maze(self):
+		self._start_callback()
+
+	def show(self):
+		self.is_visible = True
+		self._frame.pack(expand=YES)
+
+	def destroy(self):
+		self.is_visible = False
+		self._frame.pack_forget()
+class Maze_solver():
     def __init__(
             self,
             x1,

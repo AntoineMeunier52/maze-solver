@@ -13,15 +13,14 @@ def main():
 
     sys.setrecursionlimit(10000)
     win = Window(screen_x, screen_y)
-    win.drawMenu()
+    #maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win)
 
-    maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win)
-    print("maze created")
-    is_solvable = maze.solve()
-    if not is_solvable:
-        print("maze can not be solved!")
-    else:
-        print("maze solved!")
+    #print("maze created")
+    #is_solvable = maze.solve()
+    #if not is_solvable:
+    #    print("maze can not be solved!")
+    #else:
+    #    print("maze solved!")
     win.wait_for_close()
 
 if __name__ == "__main__":
