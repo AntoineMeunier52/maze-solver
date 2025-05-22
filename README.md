@@ -9,8 +9,7 @@ It automatically generates a random maze and then solves it using a pathfinding 
 
 - ✅ Random maze generation
 - ✅ Visual maze solving
-- ✅ Tkinter-based UI
-- ✅ Adjustable grid size and speed (optional)
+- ✅ Adjustable grid size
 
 ## ▶️ How to Run
 
@@ -19,4 +18,5 @@ It automatically generates a random maze and then solves it using a pathfinding 
    ```bash
    git clone https://github.com/AntoineMeunier52/maze-solver
    cd maze-solver
+   python3 src/main.py
    ```
