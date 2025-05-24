@@ -19,8 +19,8 @@ class Window():
         self._is_running = False
         self._can_change_view = False
         
-        self.maze_x = 14
-        self.maze_y = 16
+        self.maze_x = 40
+        self.maze_y = 40
         self.algo = "DFS"
 
         self._menu.show()

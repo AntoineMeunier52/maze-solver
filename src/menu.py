@@ -9,8 +9,8 @@ class Menu:
 
 		self.maze_x = IntVar()
 		self.maze_y = IntVar()
-		self.maze_x.set(10)
-		self.maze_y.set(10)
+		self.maze_x.set(40)
+		self.maze_y.set(40)
 
 		self.algo = StringVar()
 		self.algo.set("DFS")
@@ -37,7 +37,7 @@ class Menu:
 		combobox_frame = Frame(self._frame, width=200, height=100, bg="white")
 		combobox_frame.grid(row=3, pady=10)
 		combobox = ttk.Combobox(combobox_frame, width=20, textvariable=self.algo)
-		combobox["values"] = ("DFS", "BFS", "A*", "DIJKSTAR")
+		combobox["values"] = ("DFS", "oriented DFS", "BFS", "A*", "DIJKSTAR")
 		combobox.grid(row=3)
 
 		Button(self._frame, text="change view", command=self._start_maze).grid(row=4, pady=5)
