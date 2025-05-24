@@ -15,15 +15,14 @@ class Maze():
         self._canvas = None
 
     def show(self, x, y, algo):
-        print("into mazzzzzze")
         self.is_visible = True
         cell_size_x = (self.width - 2 * 50) / x
         cell_size_y = (self.height - 2 * 50) / y
         self._canvas = Canvas(self._frame, bg="white", width=self.width, height=self.height)
         self._frame.pack(expand=YES)
         self._canvas.pack(fill=BOTH, expand=1)
-        maze = Maze_solver(50, 50, x, y, cell_size_x, cell_size_y, self.redraw, self.draw_line)
-        maze.solve()
+        maze = Maze_solver(50, 50, x, y, cell_size_x, cell_size_y, self.redraw, self.draw_line, self._canvas)
+        maze.solve(algo)
 
 
     def destroy(self):
@@ -43,7 +42,8 @@ class Maze_solver():
             cell_size_x,
             cell_size_y,
             redraw,
-            draw_line
+            draw_line,
+            root
     ):
         self._x1 = x1
         self._y1 = y1
@@ -56,6 +56,7 @@ class Maze_solver():
         self._cells = [[Cell(draw_line) for j in range(num_cols)] for i in range(num_rows)]
         self._curr_x = x1
         self._curr_y = y1
+        self._canvas = root
 
         self._create_cells()
         self._break_entrance_and_exit()
@@ -140,10 +141,19 @@ class Maze_solver():
             for cell in rows:
                 cell.visited = False
 
-    def solve(self):
-        return self._solve_r(0, 0)
+    def solve(self, algo=None):
+        if algo == "DFS":
+            return self._solve_DFS(0, 0)
+        if algo == "BFS":
+            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
+        if algo == "A*":
+            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
+        if algo == "":
+            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
+        if not algo:
+            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
 
-    def _solve_r(self, i, j):
+    def _solve_DFS(self, i, j):
         self._animate(0.02)
         self._cells[i][j].visited = True
         if i == self._rows - 1 and j == self._cols - 1:
