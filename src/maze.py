@@ -144,14 +144,85 @@ class Maze_solver():
     def solve(self, algo=None):
         if algo == "DFS":
             return self._solve_DFS(0, 0)
+        if alog == "oriented DFS""
+            return self._solve_DFS_opti(0, 0)
         if algo == "BFS":
-            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
+            print("resolve BFS")
+            self._solve_BFS(0, 0)
         if algo == "A*":
             self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
-        if algo == "":
+        if algo == "DIJKSTAR":
             self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
         if not algo:
-            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
+            self._canvas.create_text(400, 20, text="No algo selected", fill="red", font=("robot", 20 ))
+
+    def _solve_DFS_opti(self, i, j):
+        queue = [(i, j)]
+        parent = { (i, j): None }
+        goal = (self._rows -1, self._cols -1)
+
+        while queue:
+            print("================> animate")
+            self._animate(0.02)
+            print("before pop:", queue)
+            i, j = queue.pop()
+            print("after pop: ", queue)
+            if (i, j) == goal:
+                break
+
+            self._cells[i][j].visited = True
+            if (
+                i > 0 
+                and not self._cells[i - 1][j].visited 
+                and not self._cells[i][j].has_top_wall
+            ):
+                    self._cells[i][j].draw_move(self._cells[i - 1][j], True)
+                    parent[(i - 1, j)] = (i, j)
+                    queue.append((i - 1, j))
+            if (
+                i < self._rows - 1
+                and not self._cells[i + 1][j].visited
+                and not self._cells[i][j].has_bottom_wall
+            ):
+                    self._cells[i][j].draw_move(self._cells[i + 1][j], True)
+                    parent[(i + 1, j)] = (i, j)
+                    queue.append((i + 1, j))
+            if (
+                j > 0
+                and not self._cells[i][j - 1].visited
+                and not self._cells[i][j].has_left_wall
+            ):
+                    self._cells[i][j].draw_move(self._cells[i][j - 1], True)
+                    parent[(i, j - 1)] = (i, j)
+                    queue.append((i, j - 1))
+            if (
+                j < self._cols - 1
+                and not self._cells[i][j + 1].visited
+                and not self._cells[i][j].has_right_wall
+            ):
+                    self._cells[i][j].draw_move(self._cells[i][j + 1], True)
+                    parent[(i, j + 1)] = (i, j)
+                    queue.append((i, j + 1))
+
+        print("out of main loop")
+        #check if maze is solved
+        if goal not in parent:
+            print("BFS: maze not solve")
+            return False
+        
+        path = []
+        cur = goal
+        while cur is not None:
+            path.append(cur)
+            cur = parent[cur]
+        path.reverse()
+
+        for (i, j), (k, l) in zip(path, path[1:]):
+            self._cells[i][j].draw_move(self._cells[k][l])
+        self._animate(1000)
+        return True
+        
+
 
     def _solve_DFS(self, i, j):
         self._animate(0.02)
@@ -165,7 +236,7 @@ class Maze_solver():
             and not self._cells[i][j].has_top_wall
         ):
             self._cells[i][j].draw_move(self._cells[i - 1][j])
-            if self._solve_r(i - 1, j):
+            if self._solve_DFS(i - 1, j):
                 return True
             else:
                 self._cells[i][j].draw_move(self._cells[i - 1][j], True)
@@ -176,7 +247,7 @@ class Maze_solver():
             and not self._cells[i][j].has_bottom_wall
         ):
             self._cells[i][j].draw_move(self._cells[i + 1][j])
-            if self._solve_r(i + 1, j):
+            if self._solve_DFS(i + 1, j):
                 return True
             else:
                 self._cells[i][j].draw_move(self._cells[i + 1][j], True)
@@ -187,7 +258,7 @@ class Maze_solver():
             and not self._cells[i][j].has_left_wall
         ):
             self._cells[i][j].draw_move(self._cells[i][j - 1])
-            if self._solve_r(i, j - 1):
+            if self._solve_DFS(i, j - 1):
                 return True
             else:
                 self._cells[i][j].draw_move(self._cells[i][j - 1], True)
@@ -198,7 +269,7 @@ class Maze_solver():
             and not self._cells[i][j].has_right_wall
         ):
             self._cells[i][j].draw_move(self._cells[i][j + 1])
-            if self._solve_r(i, j + 1):
+            if self._solve_DFS(i, j + 1):
                 return True
             else:
                 self._cells[i][j].draw_move(self._cells[i][j + 1], True)
