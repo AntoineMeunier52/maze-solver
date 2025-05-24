@@ -1,6 +1,7 @@
 from tkinter import *
 import time
 import random
+import heapq
 
 from window_utils import Cell, Line
 
@@ -149,7 +150,7 @@ class Maze_solver():
         if algo == "BFS":
             return self._solve_BFS(0, 0)
         if algo == "A*":
-            self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
+            return self._solve_Astar()
         if algo == "DIJKSTAR":
             self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
         if not algo:
@@ -329,3 +330,96 @@ class Maze_solver():
                 self._cells[i][j].draw_move(self._cells[i][j + 1], True)
 
         return False
+
+    #count a the current cell to the end of the maze
+    def _A_star_heuristic(self, a, b):
+         return abs(a[0] - b[0]) + abs(a[1] - b[1])
+    
+    def _solve_Astar(self):
+        start = (0, 0)
+        goal = (self._rows - 1, self._cols - 1)
+
+        open_set = []
+        heapq.heappush(open_set, (0, start)) #(f_score, node)
+
+        g_score = {start: 0}
+        parent = {start: None}
+
+        while open_set:
+            self._animate(0.02)
+
+            _, current = heapq.heappop(open_set)
+            i, j = current
+
+            if current == goal:
+               break
+            if self._cells[i][j].visited:
+                continue
+            self._cells[i][j].visited = True
+
+            if (
+                i > 0 
+                and not self._cells[i - 1][j].visited 
+                and not self._cells[i][j].has_top_wall
+            ):
+                tentative_g = g_score[current] + 1
+                neighbor = (i - 1, j)
+                if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                     g_score[neighbor] = tentative_g
+                     f_score = tentative_g + self._A_star_heuristic(neighbor, goal)
+                     heapq.heappush(open_set, (f_score, neighbor))
+                     parent[neighbor] = current
+                     self._cells[i][j].draw_move(self._cells[neighbor[0]][neighbor[1]], True)
+            if (
+                i < self._rows - 1
+                and not self._cells[i + 1][j].visited
+                and not self._cells[i][j].has_bottom_wall
+            ):
+                tentative_g = g_score[current] + 1
+                neighbor = (i + 1, j)
+                if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                     g_score[neighbor] = tentative_g
+                     f_score = tentative_g + self._A_star_heuristic(neighbor, goal)
+                     heapq.heappush(open_set, (f_score, neighbor))
+                     parent[neighbor] = current
+                     self._cells[i][j].draw_move(self._cells[neighbor[0]][neighbor[1]], True)
+            if (
+                j > 0
+                and not self._cells[i][j - 1].visited
+                and not self._cells[i][j].has_left_wall
+            ):
+                tentative_g = g_score[current] + 1
+                neighbor = (i, j - 1)
+                if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                     g_score[neighbor] = tentative_g
+                     f_score = tentative_g + self._A_star_heuristic(neighbor, goal)
+                     heapq.heappush(open_set, (f_score, neighbor))
+                     parent[neighbor] = current
+                     self._cells[i][j].draw_move(self._cells[neighbor[0]][neighbor[1]], True)
+            if (
+                j < self._cols - 1
+                and not self._cells[i][j + 1].visited
+                and not self._cells[i][j].has_right_wall
+            ):
+                tentative_g = g_score[current] + 1
+                neighbor = (i, j + 1)
+                if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                     g_score[neighbor] = tentative_g
+                     f_score = tentative_g + self._A_star_heuristic(neighbor, goal)
+                     heapq.heappush(open_set, (f_score, neighbor))
+                     parent[neighbor] = current
+                     self._cells[i][j].draw_move(self._cells[neighbor[0]][neighbor[1]], True)
+
+        if goal not in parent:
+             return False
+        
+        path = []
+        cur = goal
+        while cur is not None:
+            path.append(cur)
+            cur = parent[cur]
+        path.reverse()
+
+        for (i, j), (k, l) in zip(path, path[1:]):
+            self._cells[i][j].draw_move(self._cells[k][l])
+        return True
