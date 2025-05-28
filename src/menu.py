@@ -37,7 +37,8 @@ class Menu:
 		combobox_frame = Frame(self._frame, width=200, height=100, bg="white")
 		combobox_frame.grid(row=3, pady=10)
 		combobox = ttk.Combobox(combobox_frame, width=20, textvariable=self.algo)
-		combobox["values"] = ("DFS", "oriented DFS", "BFS", "A*", "DIJKSTAR")
+		combobox["values"] = ("DFS", "Directional DFS", "BFS", "A*", "Dijkstra")
+		combobox["state"] = "readonly"
 		combobox.grid(row=3)
 
 		Button(self._frame, text="change view", command=self._start_maze).grid(row=4, pady=5)

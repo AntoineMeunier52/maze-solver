@@ -42,9 +42,9 @@ class Maze_solver():
             num_cols,
             cell_size_x,
             cell_size_y,
-            redraw,
-            draw_line,
-            root
+            redraw = None,
+            draw_line = None,
+            root = None
     ):
         self._x1 = x1
         self._y1 = y1
@@ -145,13 +145,13 @@ class Maze_solver():
     def solve(self, algo=None):
         if algo == "DFS":
             return self._solve_DFS(0, 0)
-        if algo == "oriented DFS":
+        if algo == "Directional DFS":
             return self._solve_DFS_opti(0, 0)
         if algo == "BFS":
             return self._solve_BFS(0, 0)
         if algo == "A*":
             return self._solve_Astar()
-        if algo == "DIJKSTAR":
+        if algo == "Dijkstra":
             self._canvas.create_text(400, 20, text="BFS not already implement", fill="red", font=("robot", 20 ))
         if not algo:
             self._canvas.create_text(400, 20, text="No algo selected", fill="red", font=("robot", 20 ))
@@ -162,7 +162,6 @@ class Maze_solver():
         goal = (self._rows -1, self._cols -1)
 
         while queue:
-            print("================> animate")
             self._animate(0.02)
             i, j = queue.pop(0)
             if (i, j) == goal:
@@ -239,14 +238,6 @@ class Maze_solver():
                     parent[(i - 1, j)] = (i, j)
                     queue.append((i - 1, j))
             if (
-                i < self._rows - 1
-                and not self._cells[i + 1][j].visited
-                and not self._cells[i][j].has_bottom_wall
-            ):
-                    self._cells[i][j].draw_move(self._cells[i + 1][j], True)
-                    parent[(i + 1, j)] = (i, j)
-                    queue.append((i + 1, j))
-            if (
                 j > 0
                 and not self._cells[i][j - 1].visited
                 and not self._cells[i][j].has_left_wall
@@ -254,6 +245,14 @@ class Maze_solver():
                     self._cells[i][j].draw_move(self._cells[i][j - 1], True)
                     parent[(i, j - 1)] = (i, j)
                     queue.append((i, j - 1))
+            if (
+                i < self._rows - 1
+                and not self._cells[i + 1][j].visited
+                and not self._cells[i][j].has_bottom_wall
+            ):
+                    self._cells[i][j].draw_move(self._cells[i + 1][j], True)
+                    parent[(i + 1, j)] = (i, j)
+                    queue.append((i + 1, j))
             if (
                 j < self._cols - 1
                 and not self._cells[i][j + 1].visited
@@ -263,7 +262,6 @@ class Maze_solver():
                     parent[(i, j + 1)] = (i, j)
                     queue.append((i, j + 1))
 
-        print("out of main loop")
         #check if maze is solved
         if goal not in parent:
             return False

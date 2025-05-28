@@ -51,14 +51,12 @@ class Window():
             if self._can_change_view:
                 self._change_view()
                 self._can_change_view = False
-            print("loop")
             self.redraw()
-        print("The window is now close")
+        print("The window is close")
         return
 
     def close(self):
         self._is_running = False
-        print("Closing the window")
         return
 
     def draw_line(self, line, color):
